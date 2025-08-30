@@ -8,12 +8,14 @@ import SingleForumScreen from '../screens/forum/SingleForumScreen.tsx';
 
 // tabs
 import BottomTab from './TabNavigation.tsx';
+import CartScreen from "../screens/cart/CartScreen.tsx";
 
 export type RootStackParamList = {
   LoginScreen: undefined;
   BottomTab: undefined;
   EditProfile: undefined;
   SettingsScreen: undefined;
+  CartScreen: undefined;
   SingleForumScreen: undefined;
   // Products: undefined;
 };
@@ -45,6 +47,11 @@ export default function StackNavigator() {
         options={{}}
       />
 
+        <Stack.Screen
+            name="CartScreen"
+            component={CartScreen}
+            options={{ title: 'Cart' }}
+        />
       {/* dynamic screens */}
       <Stack.Screen
         name="SingleForumScreen"

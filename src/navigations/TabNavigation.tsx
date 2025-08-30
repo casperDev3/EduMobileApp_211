@@ -18,7 +18,7 @@ const BottomTab: React.FC = () => {
         tabBarInactiveTintColor: '#090808',
         headerShown: false,
       }}
-      initialRouteName="Events">
+      initialRouteName="Home">
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Events" component={EventsScreen} />
       <Tab.Screen name="Store" component={StoreScreen} />

@@ -1,35 +1,33 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View, TouchableWithoutFeedback} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
+import {useState} from "react";
+import InfoButtons from "./InfoButtons.tsx";
 
-const ForumCard = ({forum}: any) => {
+const ForumCard = ({forum, changePinnedStatus}: any) => {
   const navigation = useNavigation();
   const {creator} = forum;
+  const [menuVisible, setMenuVisible] = useState(false);
+  const toggleMenu = () => setMenuVisible(!menuVisible);
+  const hideMenu = () => setMenuVisible(false);
+
   return (
-    <>
+      <TouchableWithoutFeedback onPress={hideMenu}>
       <View style={styles.container}>
         <View style={styles.info}>
           <Text style={styles.infoText}>12 month ago</Text>
-          <View style={styles.infoButtons}>
-            <TouchableOpacity onPress={() => {}}>
-              <Image
-                style={styles.infoButtonsPin}
-                source={require('../assets/pin.png')}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.infoButtonsOption}
-              onPress={() => {}}>
-              <View style={styles.infoButtonsOptionDot}></View>
-              <View style={styles.infoButtonsOptionDot}></View>
-              <View style={styles.infoButtonsOptionDot}></View>
-            </TouchableOpacity>
-          </View>
+          <InfoButtons
+              forum={forum}
+              changePinnedStatus={changePinnedStatus}
+              menuVisible={menuVisible}
+              toggleMenu={toggleMenu}
+              hideMenu={hideMenu}
+          />
         </View>
         <TouchableOpacity
           style={styles.topic}
           onPress={() => {
             // @ts-ignore
-            navigation.navigate('SingleForumScreen', {});
+            navigation.navigate('SingleForumScreen', {forum});
           }}>
           <View style={styles.topicCreator}>
             {/* TODO: Can't load img from net*/}
@@ -42,10 +40,10 @@ const ForumCard = ({forum}: any) => {
                 <Text style={styles.topicCreatorInfoNameTxt}>
                   {creator?.name}
                 </Text>
-                <Image
+                {creator?.approved && <Image
                   source={require('../assets/Verify.png')}
                   style={styles.topicCreatorInfoApproved}
-                />
+                />}
               </View>
               <Text style={styles.topicCreatorDetails}>
                 {creator?.poster} | {creator?.role}
@@ -82,7 +80,7 @@ const ForumCard = ({forum}: any) => {
           </View>
         </View>
       </View>
-    </>
+      </TouchableWithoutFeedback>
   );
 };
 
@@ -148,7 +146,7 @@ const styles = StyleSheet.create({
     maxHeight: 28,
     minWidth: 28,
     maxWidth: 28,
-    borderRadius: '50%',
+    borderRadius: 50,
   },
   topicCreatorInfoApproved: {
     minHeight: 16,
@@ -173,29 +171,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '500',
     color: '#B8B8B8',
-  },
-  infoButtons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  infoButtonsPin: {
-    minWidth: 16,
-    maxWidth: 16,
-    minHeight: 16,
-    maxHeight: 16,
-  },
-  infoButtonsOption: {
-    flexDirection: 'row',
-    marginLeft: 12,
-  },
-  infoButtonsOptionDot: {
-    minWidth: 4,
-    maxWidth: 4,
-    minHeight: 4,
-    maxHeight: 4,
-    backgroundColor: '#000',
-    marginLeft: 2,
-    borderRadius: '50%',
   },
 });
 

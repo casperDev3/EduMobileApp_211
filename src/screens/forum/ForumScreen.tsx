@@ -7,12 +7,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useState} from 'react';
+import {useMemo, useState} from 'react';
 import ForumCard from '../../components/forumCard.tsx';
 
 const ForumScreen = () => {
   // states
-  const [forums] = useState<any[]>([
+  const [forums, setForums] = useState<any[]>([
     {
       id: 1,
       topic:
@@ -159,6 +159,13 @@ const ForumScreen = () => {
     },
   ]);
 
+  const changePinnedStatus = (id: number) => {
+    const updatedForums = forums.map(item =>
+        item.id === id ? { ...item, pinned: !item.pinned } : item
+    );
+    setForums(updatedForums);
+  };
+
   const [filters] = useState<string[]>([
     'Усі',
     'Information',
@@ -167,7 +174,17 @@ const ForumScreen = () => {
     'Business',
     'Member Discussion',
   ]);
+
   const [activeFilter, setActiveFilter] = useState<string>('Усі');
+
+  const filteredForums = useMemo(() => {
+    return activeFilter !== 'Усі'
+        ? forums.filter(
+            item => item.category === activeFilter,
+        )
+        : forums;
+  }, [activeFilter, forums]);
+
   // handlers
   const searchHandler = () => {
     Alert.alert('Pressed Search Icon', 'Pressed Search Icon');
@@ -176,7 +193,6 @@ const ForumScreen = () => {
     Alert.alert('Pressed Search Message', 'Pressed Search Message');
   };
   return (
-    <>
       <SafeAreaView style={styles.container}>
         <View style={styles.top}>
           <Text style={styles.topTitle}>Forum</Text>
@@ -227,13 +243,18 @@ const ForumScreen = () => {
             ))}
           </View>
           <View style={styles.forum}>
-            {forums.map(item => (
-                <ForumCard key={item.id} forum={item} />
+            {filteredForums
+                .sort(item => item.pinned ? -1 : 1)
+                .map(item => (
+                <ForumCard
+                    key={item.id}
+                    forum={item}
+                    changePinnedStatus={changePinnedStatus}
+                />
             ))}
           </View>
         </ScrollView>
       </SafeAreaView>
-    </>
   );
 };
 
